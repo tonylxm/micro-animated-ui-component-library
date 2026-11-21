@@ -1,9 +1,10 @@
-// @tonylxm/segmented-control v0.1.2. Base UI toggle group, single choice, with a sliding pill.
-// Needs @tonylxm/tactile and @tonylxm/sliding-indicator.
+// @tonylxm/segmented-control v0.1.3. Base UI toggle group, single choice, with a sliding pill.
+// Needs @tonylxm/tactile, @tonylxm/sliding-indicator and @tonylxm/use-press.
 import * as React from "react"
 import { Toggle } from "@base-ui/react/toggle"
 import { ToggleGroup } from "@base-ui/react/toggle-group"
 import { cn } from "@/lib/utils"
+import { usePress } from "@/registry/default/hooks/use-press"
 import { SlidingIndicator } from "@/registry/default/ui/sliding-indicator"
 
 type SegmentedControlProps = Omit<
@@ -51,16 +52,18 @@ function SegmentedControl({
 }
 
 function SegmentedControlItem({ className, ...props }: Toggle.Props) {
+  const press = usePress(props)
   return (
     <Toggle
       data-slot="segmented-control-item"
       className={cn(
         "inline-flex h-7 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-medium whitespace-nowrap outline-none select-none",
-        "transition-[color,scale] duration-(--duration-release) ease-(--ease-spring) active:scale-96 active:duration-(--duration-press) active:ease-out motion-reduce:active:scale-100",
+        "transition-[color,scale] duration-(--duration-release) ease-(--ease-spring) data-down:scale-96 data-down:duration-(--duration-press) data-down:ease-out motion-reduce:data-down:scale-100",
         "hover:text-foreground data-pressed:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
         className
       )}
       {...props}
+      {...press}
     />
   )
 }

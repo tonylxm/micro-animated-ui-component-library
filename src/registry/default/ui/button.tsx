@@ -1,30 +1,31 @@
-// @tonylxm/button v0.1.0. shadcn base-nova button with the tactile press. Needs @tonylxm/tactile.
+// @tonylxm/button v0.1.1. shadcn base-nova button with the tactile press. Needs @tonylxm/tactile and @tonylxm/use-press.
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { usePress } from "@/registry/default/hooks/use-press"
 
 // Light from above at rest, nearly flat while pressed (tactile.md: raised buttons).
 const RAISED =
-  "shadow-(--raised-shadow) inset-shadow-(--raised-highlight) active:shadow-(--raised-shadow-pressed) active:inset-shadow-(--raised-highlight-pressed)"
+  "shadow-(--raised-shadow) inset-shadow-(--raised-highlight) data-down:shadow-(--raised-shadow-pressed) data-down:inset-shadow-(--raised-highlight-pressed)"
 
-// Entering :active uses the active:* timing (quick press). Leaving it uses the base timing, so the
-// release is slower and springs back.
+// Entering the pressed state (data-down, set by usePress) uses the data-down:* timing, a quick press.
+// Leaving it uses the base timing, so the release is slower and springs back.
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap outline-none select-none transition-[scale,translate,box-shadow,background-color,color] duration-(--duration-release) ease-(--ease-spring) active:duration-(--duration-press) active:ease-out active:not-aria-[haspopup]:scale-(--press-scale) active:not-aria-[haspopup]:translate-y-px motion-reduce:active:scale-100 motion-reduce:active:translate-y-0 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:inset-shadow-none aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap outline-none select-none transition-[scale,translate,box-shadow,background-color,color] duration-(--duration-release) ease-(--ease-spring) data-down:duration-(--duration-press) data-down:ease-out data-down:not-aria-[haspopup]:scale-(--press-scale) data-down:not-aria-[haspopup]:translate-y-px motion-reduce:data-down:scale-100 motion-reduce:data-down:translate-y-0 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:inset-shadow-none aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          `${RAISED} bg-primary text-primary-foreground hover:bg-primary/90 active:bg-[color-mix(in_oklch,var(--primary),black_12%)]`,
+          `${RAISED} bg-primary text-primary-foreground hover:bg-primary/90 data-down:bg-[color-mix(in_oklch,var(--primary),black_12%)]`,
         outline:
-          `${RAISED} border-border bg-background hover:bg-muted hover:text-foreground active:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_6%)] aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50`,
+          `${RAISED} border-border bg-background hover:bg-muted hover:text-foreground data-down:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_6%)] aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50`,
         secondary:
-          `${RAISED} bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] active:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_10%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground`,
+          `${RAISED} bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] data-down:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_10%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground`,
         ghost:
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline active:not-aria-[haspopup]:scale-100 active:not-aria-[haspopup]:translate-y-0",
+        link: "text-primary underline-offset-4 hover:underline data-down:not-aria-[haspopup]:scale-100 data-down:not-aria-[haspopup]:translate-y-0",
       },
       size: {
         default:
@@ -53,11 +54,13 @@ function Button({
   size = "default",
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  const press = usePress(props)
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
+      {...press}
     />
   )
 }

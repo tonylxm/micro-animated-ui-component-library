@@ -137,3 +137,62 @@ test("theme toggle stays top right at phone width", async ({ page }) => {
   expect(toggle.y).toBeLessThan(title.y + title.height)
   expect(viewport.width - (toggle.x + toggle.width)).toBeLessThanOrEqual(24)
 })
+
+// A quick tap must show the press-in, and must let go soon after: not flash past, not stay stuck.
+async function sampleTap(page: Page, act: () => Promise<void>) {
+  const button = page.getByRole("button", { name: "Save changes" })
+  await button.evaluate((node) => {
+    const samples: { t: number; scale: number; down: boolean }[] = []
+    ;(window as unknown as { __tap: typeof samples }).__tap = samples
+    const tick = () => {
+      const scale = getComputedStyle(node).scale
+      samples.push({
+        t: performance.now(),
+        scale: scale === "none" ? 1 : parseFloat(scale),
+        down: node.hasAttribute("data-down"),
+      })
+      requestAnimationFrame(tick)
+    }
+    tick()
+  })
+  await act()
+  await page.waitForTimeout(600)
+  const samples = await page.evaluate(
+    () => (window as unknown as { __tap: { t: number; scale: number; down: boolean }[] }).__tap
+  )
+  const down = samples.filter((s) => s.down)
+  return {
+    minScale: Math.min(...samples.map((s) => s.scale)),
+    heldMs: down.length ? down[down.length - 1].t - down[0].t : 0,
+    stuck: samples[samples.length - 1].down,
+  }
+}
+
+test("a quick click presses in for a visible moment, then lets go", async ({ page }) => {
+  await page.goto("/")
+  const button = page.getByRole("button", { name: "Save changes" })
+  const box = (await button.boundingBox())!
+  const result = await sampleTap(page, async () => {
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    await page.mouse.down()
+    await page.waitForTimeout(15)
+    await page.mouse.up()
+  })
+  expect(result.minScale).toBeLessThan(0.985)
+  expect(result.heldMs).toBeGreaterThan(60)
+  expect(result.heldMs).toBeLessThan(250)
+  expect(result.stuck).toBe(false)
+})
+
+test("a touch tap presses in, then lets go without lingering", async ({ page }) => {
+  await page.goto("/")
+  const button = page.getByRole("button", { name: "Save changes" })
+  const box = (await button.boundingBox())!
+  const result = await sampleTap(page, () =>
+    page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2)
+  )
+  expect(result.minScale).toBeLessThan(0.985)
+  expect(result.heldMs).toBeGreaterThan(60)
+  expect(result.heldMs).toBeLessThan(250)
+  expect(result.stuck).toBe(false)
+})

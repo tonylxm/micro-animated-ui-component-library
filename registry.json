@@ -17,12 +17,19 @@
       ]
     },
     {
+      "name": "use-press",
+      "type": "registry:hook",
+      "title": "usePress",
+      "description": "Press-in state that stays visible for a minimum hold, so a quick tap or trackpad click shows it.",
+      "files": [{ "path": "src/registry/default/hooks/use-press.ts", "type": "registry:hook" }]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
       "description": "Raised button that presses in quickly and springs back slower.",
       "dependencies": ["@base-ui/react", "class-variance-authority"],
-      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "registryDependencies": ["utils", "@tonylxm/tactile", "@tonylxm/use-press"],
       "files": [{ "path": "src/registry/default/ui/button.tsx", "type": "registry:ui" }]
     },
     {
@@ -31,7 +38,7 @@
       "title": "Tabs",
       "description": "Base UI tabs with a sliding, springy selection pill.",
       "dependencies": ["@base-ui/react"],
-      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "registryDependencies": ["utils", "@tonylxm/tactile", "@tonylxm/use-press"],
       "files": [{ "path": "src/registry/default/ui/tabs.tsx", "type": "registry:ui" }]
     },
     {
@@ -48,7 +55,7 @@
       "title": "Segmented control",
       "description": "Single-choice toggle group that always keeps one value, with a sliding pill.",
       "dependencies": ["@base-ui/react"],
-      "registryDependencies": ["utils", "@tonylxm/tactile", "@tonylxm/sliding-indicator"],
+      "registryDependencies": ["utils", "@tonylxm/tactile", "@tonylxm/sliding-indicator", "@tonylxm/use-press"],
       "files": [{ "path": "src/registry/default/ui/segmented-control.tsx", "type": "registry:ui" }]
     },
     {

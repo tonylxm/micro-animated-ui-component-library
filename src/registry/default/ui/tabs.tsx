@@ -1,6 +1,7 @@
-// @tonylxm/tabs v0.1.2. Base UI tabs with a sliding pill (Base UI measures it). Needs @tonylxm/tactile.
+// @tonylxm/tabs v0.1.3. Base UI tabs with a sliding pill (Base UI measures it). Needs @tonylxm/tactile and @tonylxm/use-press.
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
 import { cn } from "@/lib/utils"
+import { usePress } from "@/registry/default/hooks/use-press"
 
 function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
   return (
@@ -36,17 +37,19 @@ function TabsList({
 }
 
 function TabsTab({ className, ...props }: TabsPrimitive.Tab.Props) {
+  const press = usePress(props)
   return (
     <TabsPrimitive.Tab
       data-slot="tabs-tab"
       className={cn(
         "inline-flex h-7 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-medium whitespace-nowrap outline-none select-none",
         // Colour only on the label. The squish on press is the item itself; the pill handles position.
-        "transition-[color,scale] duration-(--duration-release) ease-(--ease-spring) active:scale-96 active:duration-(--duration-press) active:ease-out motion-reduce:active:scale-100",
+        "transition-[color,scale] duration-(--duration-release) ease-(--ease-spring) data-down:scale-96 data-down:duration-(--duration-press) data-down:ease-out motion-reduce:data-down:scale-100",
         "hover:text-foreground data-active:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
         className
       )}
       {...props}
+      {...press}
     />
   )
 }
