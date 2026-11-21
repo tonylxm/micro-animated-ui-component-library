@@ -21,7 +21,7 @@ Everything is written from the idea, not copied. Base UI handles behavior and ac
 
 1. Add the registry to `components.json`:
    ```json
-   "registries": { "@tonylxm": "https://<host>/r/{name}.json" }
+   "registries": { "@tonylxm": "https://micro-animated-ui-component-library.tonylim.workers.dev/r/{name}.json" }
    ```
 2. Install: `pnpm dlx shadcn@latest add @tonylxm/button`
 3. Import the tokens once, after the shadcn theme in your global CSS: `@import "../styles/tactile.css";`
