@@ -1,0 +1,78 @@
+/* @tonylxm/tactile v0.1.2
+   Motion and depth tokens. Import after `tailwindcss` and the shadcn theme. Colours and radius stay on
+   shadcn's variables, so this file only adds motion, depth and a few base rules. */
+
+/* Overrides Tailwind's built-in ease-out and ease-in-out on purpose: the defaults are too weak for UI. */
+@theme {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Anything that travels across a container (pills, indicators) uses this: it never overshoots, so it
+     can't leave its track. --ease-spring overshoots, so keep it to small things (a press release,
+     a squish): the overshoot grows with distance. */
+  --ease-slide: cubic-bezier(0.32, 0.72, 0, 1);
+  /* About 7% overshoot, one settle. Browsers without linear() drop the declaration and fall back to `ease`. */
+  --ease-spring: linear(0, 0.22 8%, 0.72 20%, 1.04 34%, 1.07 40%, 0.98 56%, 1.01 72%, 1);
+}
+
+:root {
+  --duration-press: 140ms;
+  --duration-release: 200ms;
+  --duration-fast: 150ms;
+  --duration-slide: 280ms;
+  --duration-shimmer: 1.5s;
+  --press-scale: 0.97;
+
+  /* Shadow pairs keep the same layer count at rest and pressed, so they interpolate instead of snapping.
+     Highlights have no `inset` keyword: Tailwind's inset-shadow-(...) adds it. */
+  --raised-highlight: 0 1px 0 rgb(255 255 255 / 0.2);
+  --raised-highlight-pressed: 0 1px 0 rgb(255 255 255 / 0);
+  --raised-shadow: 0 1px 1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.14);
+  --raised-shadow-pressed: 0 0 0 rgb(0 0 0 / 0.1), 0 1px 1px -1px rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  --raised-highlight: 0 1px 0 rgb(255 255 255 / 0.08);
+  --raised-shadow: 0 1px 1px rgb(0 0 0 / 0.4), 0 2px 6px -1px rgb(0 0 0 / 0.5);
+  --raised-shadow-pressed: 0 0 0 rgb(0 0 0 / 0.4), 0 1px 1px -1px rgb(0 0 0 / 0.4);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Lets height: auto transition (accordions, disclosures). Chromium only for now, elsewhere it snaps. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* Add this class to <html> for one frame while switching theme, so every colour doesn't transition at once. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+@keyframes tactile-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Content arriving into a skeleton's box: opacity only, no slide. */
+@keyframes tactile-fade-in {
+  from {
+    opacity: 0;
+  }
+}

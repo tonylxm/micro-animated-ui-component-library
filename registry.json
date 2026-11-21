@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "tonylxm",
+  "homepage": "https://github.com/tonylxm/micro-animated-ui-component-library",
+  "items": [
+    {
+      "name": "tactile",
+      "type": "registry:file",
+      "title": "Tactile tokens",
+      "description": "Motion and depth tokens: easings, durations, press scale, raised shadows, shimmer. Import after the shadcn theme.",
+      "files": [
+        {
+          "path": "src/registry/default/styles/tactile.css",
+          "type": "registry:file",
+          "target": "~/src/styles/tactile.css"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Raised button that presses in quickly and springs back slower.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "files": [{ "path": "src/registry/default/ui/button.tsx", "type": "registry:ui" }]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Base UI tabs with a sliding, springy selection pill.",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "files": [{ "path": "src/registry/default/ui/tabs.tsx", "type": "registry:ui" }]
+    },
+    {
+      "name": "sliding-indicator",
+      "type": "registry:ui",
+      "title": "Sliding indicator",
+      "description": "A pill that slides to a control's selected item: pressed toggle, aria-current link or checked radio.",
+      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "files": [{ "path": "src/registry/default/ui/sliding-indicator.tsx", "type": "registry:ui" }]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented control",
+      "description": "Single-choice toggle group that always keeps one value, with a sliding pill.",
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils", "@tonylxm/tactile", "@tonylxm/sliding-indicator"],
+      "files": [{ "path": "src/registry/default/ui/segmented-control.tsx", "type": "registry:ui" }]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Synced shimmer skeleton and a useSkeleton hook that avoids flashes on fast loads.",
+      "registryDependencies": ["utils", "@tonylxm/tactile"],
+      "files": [{ "path": "src/registry/default/ui/skeleton.tsx", "type": "registry:ui" }]
+    },
+    {
+      "name": "button-demo",
+      "type": "registry:example",
+      "registryDependencies": ["@tonylxm/button"],
+      "dependencies": ["lucide-react"],
+      "files": [{ "path": "src/registry/default/examples/button-demo.tsx", "type": "registry:example" }]
+    },
+    {
+      "name": "tabs-demo",
+      "type": "registry:example",
+      "registryDependencies": ["@tonylxm/tabs"],
+      "files": [{ "path": "src/registry/default/examples/tabs-demo.tsx", "type": "registry:example" }]
+    },
+    {
+      "name": "segmented-control-demo",
+      "type": "registry:example",
+      "registryDependencies": ["@tonylxm/segmented-control"],
+      "files": [{ "path": "src/registry/default/examples/segmented-control-demo.tsx", "type": "registry:example" }]
+    },
+    {
+      "name": "skeleton-demo",
+      "type": "registry:example",
+      "registryDependencies": ["@tonylxm/skeleton", "@tonylxm/button"],
+      "files": [{ "path": "src/registry/default/examples/skeleton-demo.tsx", "type": "registry:example" }]
+    }
+  ]
+}
