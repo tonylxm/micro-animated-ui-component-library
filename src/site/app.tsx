@@ -1,5 +1,5 @@
 import { Moon, Sun } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/registry/default/ui/button"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/registry/default/ui/tabs"
 import { items, type GalleryItem } from "./items"
@@ -82,6 +82,8 @@ function ThemeToggle({ theme, onToggle }: { theme: string; onToggle: () => void 
 function InstallCommand({ name }: { name: string }) {
   const command = `pnpm dlx shadcn@latest add ${NAMESPACE}/${name}`
   const [copied, setCopied] = useState(false)
+  const timer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(timer.current), [])
   return (
     <div className="flex min-w-0 items-center gap-2 rounded-lg border bg-muted/50 py-1 pr-1 pl-3">
       <code className="min-w-0 flex-1 truncate text-xs">{command}</code>
@@ -93,7 +95,9 @@ function InstallCommand({ name }: { name: string }) {
           navigator.clipboard.writeText(command).then(
             () => {
               setCopied(true)
-              setTimeout(() => setCopied(false), 1500)
+              // One timer, restarted by every tap, so a spam of taps can't reset the label early.
+              window.clearTimeout(timer.current)
+              timer.current = window.setTimeout(() => setCopied(false), 1500)
             },
             () => {}
           )
